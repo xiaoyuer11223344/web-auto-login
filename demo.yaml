@@ -1,0 +1,5 @@
+userInput: "/html/body/div/div/div[2]/form/ul/li[2]/div/input"
+passwordInput: "/html/body/div/div/div[2]/form/ul/li[3]/div/input"
+loginBtn: "/html/body/div/div/div[2]/form/ul/li[4]/button"
+captchaInput:
+captchaImg:

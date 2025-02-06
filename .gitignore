@@ -6,3 +6,6 @@ build/package
 deploy/prod
 
 docs/
+
+.DS_Store
+output.json

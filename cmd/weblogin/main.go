@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -11,14 +12,14 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v3"
-	
+
 	"zp-weblogin/pkg/browser"
 	"zp-weblogin/pkg/config"
 	"zp-weblogin/pkg/crack"
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "zp-weblogin",
+	Use:   "auto-web-login",
 	Short: "Web login testing tool",
 	Long:  "A tool for testing web login pages with automatic detection and manual configuration support",
 }
@@ -26,7 +27,7 @@ var rootCmd = &cobra.Command{
 var webLoginCmd = &cobra.Command{
 	Use:     "weblogin",
 	Short:   "Start web login testing",
-	Example: "zp-weblogin weblogin -i http://example.com:9001",
+	Example: "./auto-web-login weblogin -i http://example.com:9001",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		// Parse flags
 		inputs, _ := cmd.Flags().GetStringSlice("inputs")
@@ -109,6 +110,11 @@ var webLoginCmd = &cobra.Command{
 			if err := yaml.Unmarshal(data, &cfg); err != nil {
 				return err
 			}
+
+			if cfg.UserInput == "" || cfg.PasswordInput == "" {
+				return errors.New("cfg.UserInput == \"\" || cfg.PasswordInput == \"\", please check ")
+			}
+
 			selector = &browser.Selector{
 				UserInput:     cfg.UserInput,
 				PasswordInput: cfg.PasswordInput,
@@ -170,12 +176,12 @@ var webLoginCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(webLoginCmd)
-	
+
 	webLoginCmd.Flags().StringSliceP("inputs", "i", nil, "inputs split by comma")
 	webLoginCmd.Flags().StringP("inputs-file", "f", "", "inputs file split by line")
 	webLoginCmd.Flags().String("level", "debug", "logger level(debug|info|error)")
 	webLoginCmd.Flags().StringP("output-file", "o", "output.json", "output file to write results")
-	
+
 	webLoginCmd.Flags().Bool("crack-all", false, "crack all user and pass")
 	webLoginCmd.Flags().Int("delay", 1, "delay time between crack")
 	webLoginCmd.Flags().Bool("headless", false, "headless mode")

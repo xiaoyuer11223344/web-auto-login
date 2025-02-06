@@ -22,7 +22,7 @@ func New(headless bool, proxy string) (*Browser, error) {
 	if proxy != "" {
 		l = l.Proxy(proxy)
 	}
-	
+
 	u := l.MustLaunch()
 	browser := rod.New().
 		ControlURL(u).
