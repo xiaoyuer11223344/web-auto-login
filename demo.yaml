@@ -1,5 +1,28 @@
-userInput: "/html/body/div/div/div[2]/form/ul/li[2]/div/input"
-passwordInput: "/html/body/div/div/div[2]/form/ul/li[3]/div/input"
-loginBtn: "/html/body/div/div/div[2]/form/ul/li[4]/button"
-captchaInput:
-captchaImg:
+userInput: "//input[@placeholder='用户名']"
+passwordInput: "//input[@placeholder='密码']"
+loginBtn: "//button[@type='submit']"
+rememberMe: "//input[@type='checkbox' and (@name='remember' or @id='remember')]"
+successIndicators:
+  - selector: ".user-profile"
+    type: "element"
+  - selector: ".avatar"
+    type: "element"
+  - selector: ".logout"
+    type: "element"
+  - selector: "auth_token"
+    type: "cookie"
+  - selector: "session_id"
+    type: "cookie"
+errorIndicators:
+  - selector: ".error"
+    type: "element"
+  - selector: "[role='alert']"
+    type: "element"
+  - selector: ".alert-error"
+    type: "element"
+  - selector: ".message-error"
+    type: "element"
+timeouts:
+  login: 10
+  element: 5
+  navigation: 5

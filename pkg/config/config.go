@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 type SelectorConfig struct {
 	UserInput     string `yaml:"userInput"`
 	PasswordInput string `yaml:"passwordInput"`
@@ -26,4 +28,13 @@ type Config struct {
 	Threads       int
 	UserList      []string
 	UserFile      string
+	LoginTimeout  time.Duration
+	PageTimeout   time.Duration
+}
+
+func NewConfig() *Config {
+	return &Config{
+		LoginTimeout: DefaultLoginTimeout,
+		PageTimeout:  DefaultPageTimeout,
+	}
 }

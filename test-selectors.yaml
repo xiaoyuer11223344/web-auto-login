@@ -1,0 +1,6 @@
+userInput: "//input[@placeholder='用户名']"
+passwordInput: "//input[@placeholder='密码']"
+loginBtn: "//button[@type='submit']"
+rememberMe: "//input[@type='checkbox']"
+captchaInput: ""
+captchaImg: ""
