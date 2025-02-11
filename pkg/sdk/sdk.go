@@ -3,7 +3,7 @@ package sdk
 import (
 	"context"
 	"time"
-	"zp-weblogin/pkg/browser"
+	"xiaoyu/pkg/browser"
 )
 
 type Config struct {
@@ -25,7 +25,7 @@ type Result struct {
 
 // Login 使用默认选择器进行登录
 func Login(c Config) (*Result, error) {
-	b, err := browser.New(c.Headless, "")
+	b, err := browser.New(c.Headless, "", c.OCRUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +61,7 @@ func Login(c Config) (*Result, error) {
 
 // LoginWithSelector 允许使用自定义选择器进行登录
 func LoginWithSelector(c Config, s *browser.Selector) (*Result, error) {
-	b, err := browser.New(c.Headless, "")
+	b, err := browser.New(c.Headless, "", c.OCRUrl)
 	if err != nil {
 		return nil, err
 	}

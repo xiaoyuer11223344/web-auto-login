@@ -1,13 +1,14 @@
 package ocr
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -19,9 +20,12 @@ type Client struct {
 }
 
 type OCRRequest struct {
-	Image []byte `json:"image"`
+	Image       string `json:"image"`
+	Probability bool   `json:"probability"`
+	PngFix      bool   `json:"png_fix"`
 }
 
+// {"code":200,"message":"Success","data":"sw9f"}
 type OCRResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
@@ -41,31 +45,39 @@ func NewClient(baseURL string) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) RecognizeCaptcha(ctx context.Context, imageData []byte) (string, error) {
+func (c *Client) RecognizeCaptcha(ctx context.Context, base64Image string) (string, error) {
 	if !c.initialized {
 		return "", errors.New("OCR client not properly initialized")
 	}
 
 	logger := log.WithField("action", "ocr_request")
 
-	reqBody := OCRRequest{
-		Image: imageData,
-	}
+	//reqBody := OCRRequest{
+	//	Image:       imageData,
+	//	Probability: false,
+	//	PngFix:      false,
+	//}
+	//
+	//jsonData, err := json.Marshal(reqBody)
+	//if err != nil {
+	//	return "", fmt.Errorf("failed to marshal request: %w", err)
+	//}
 
-	jsonData, err := json.Marshal(reqBody)
-	if err != nil {
-		return "", fmt.Errorf("failed to marshal request: %w", err)
-	}
-
-	endpoint := fmt.Sprintf("%s/ocr/b64/json", c.baseURL)
+	endPoint := fmt.Sprintf("%s/ocr", c.baseURL)
 	if c.baseURL == "" {
 		return "", errors.New("OCR endpoint URL not configured")
 	}
-	req, err := http.NewRequestWithContext(ctx, "POST", endpoint, bytes.NewReader(jsonData))
+
+	data := url.Values{}
+	data.Set("image", base64Image)
+	data.Set("probability", "false")
+	data.Set("png_fix", "false")
+
+	req, err := http.NewRequestWithContext(ctx, "POST", endPoint, strings.NewReader(data.Encode()))
 	if err != nil {
 		return "", fmt.Errorf("failed to create request: %w", err)
 	}
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
@@ -87,7 +99,7 @@ func (c *Client) RecognizeCaptcha(ctx context.Context, imageData []byte) (string
 		return "", fmt.Errorf("failed to parse response: %w", err)
 	}
 
-	if ocrResp.Code != 0 {
+	if ocrResp.Code != 200 {
 		return "", fmt.Errorf("OCR service error: %s", ocrResp.Message)
 	}
 

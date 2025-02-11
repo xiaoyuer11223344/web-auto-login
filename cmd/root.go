@@ -9,7 +9,7 @@ import (
 	"gopkg.in/yaml.v3"
 	"os"
 	"strings"
-	"zp-weblogin/pkg/browser"
+	"xiaoyu/pkg/browser"
 )
 
 var gCtx = context.Background()
@@ -41,6 +41,7 @@ type Options struct {
 	threads           int
 	userList          []string
 	userFile          string
+	ocrURL            string
 }
 
 var globalOptions = &Options{}
@@ -92,7 +93,7 @@ func printConfiguration(flags *Options) {
 			"headless":    flags.headless,
 			"debug":       false,
 			"maxAttempts": flags.maxAttempts,
-			"ocrBaseURL":  "http://10.1.2.217:9898",
+			"ocrBaseURL":  flags.ocrURL,
 		},
 		"threads":      flags.threads,
 		"crackAll":     flags.crackAll,

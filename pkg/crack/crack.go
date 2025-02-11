@@ -7,7 +7,7 @@ import (
 
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"zp-weblogin/pkg/browser"
+	"xiaoyu/pkg/browser"
 )
 
 type Task struct {

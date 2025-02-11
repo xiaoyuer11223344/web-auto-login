@@ -1,0 +1,12 @@
+2025-02-12 00:00:00 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-12 00:00:02 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-12 00:00:02 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Aa123456
+2025-02-12 00:00:02 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-12 00:00:03 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin
+2025-02-12 00:00:03 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin123
+2025-02-12 00:00:13 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-12 00:00:14 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin@123
+2025-02-12 00:00:14 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-12 00:00:15 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-12 00:00:16 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Admin@123
+2025-02-12 00:00:16 DEBUG [weblogin] weblogin/runner.go:141 login => admin:P@sswOrd

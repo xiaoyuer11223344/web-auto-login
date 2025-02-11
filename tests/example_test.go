@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 	"time"
-	"zp-weblogin/pkg/browser"
-	"zp-weblogin/pkg/sdk"
+	"xiaoyu/pkg/browser"
+	"xiaoyu/pkg/sdk"
 )
 
 func Test_sdk_login(t *testing.T) {

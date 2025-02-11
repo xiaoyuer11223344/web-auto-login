@@ -9,8 +9,8 @@ import (
 	"gopkg.in/yaml.v3"
 	"os"
 	"time"
-	"zp-weblogin/pkg/browser"
-	"zp-weblogin/pkg/crack"
+	"xiaoyu/pkg/browser"
+	"xiaoyu/pkg/crack"
 )
 
 func init() {
@@ -33,6 +33,8 @@ func init() {
 	flags.StringSliceVar(&globalOptions.passList, "pass", nil, "pass list, split by comma")
 	flags.StringVar(&globalOptions.passFile, "pass-file", "", "pass file")
 	flags.StringVar(&globalOptions.selectorFile, "selector-file", "", "selector file")
+
+	flags.StringVar(&globalOptions.ocrURL, "ocr-url", "http://120.26.57.12:8000", "OCR service URL for captcha solving")
 
 	rootCmd.AddCommand(webLoginCmd)
 }
@@ -115,7 +117,7 @@ func GetSelector(ctx context.Context, url string) (s *browser.Selector, err erro
 	} else {
 
 		var b *browser.Browser
-		b, err = browser.New(globalOptions.headless, globalOptions.proxy)
+		b, err = browser.New(globalOptions.headless, globalOptions.proxy, globalOptions.ocrURL)
 		if err != nil {
 			return nil, fmt.Errorf("failed to create browser: %w", err)
 		}
@@ -167,7 +169,7 @@ func Crack(ctx context.Context, task crack.Task, s *browser.Selector) {
 	var b *browser.Browser
 	var err error
 
-	b, err = browser.New(globalOptions.headless, globalOptions.proxy)
+	b, err = browser.New(globalOptions.headless, globalOptions.proxy, globalOptions.ocrURL)
 	if err != nil {
 		return
 	}

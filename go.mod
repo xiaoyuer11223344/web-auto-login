@@ -1,4 +1,4 @@
-module zp-weblogin
+module xiaoyu
 
 go 1.22.3
 

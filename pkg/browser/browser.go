@@ -18,6 +18,12 @@ type Browser struct {
 	browser *rod.Browser
 	page    *rod.Page
 	mu      sync.Mutex
+
+	captchaHandler *CaptchaHandler      // Handler for processing captcha challenges
+	authTokens     map[string]string    // Store detected auth tokens
+	lastStatus     int                  // Store last HTTP status code
+	lastResponse   string               // Store last response body for error detection
+	selectorCache  map[string]*Selector // Cache successful selectors by URL for better performance
 }
 
 var MyDevice = devices.Device{
@@ -44,7 +50,7 @@ var MyDevice = devices.Device{
 // @param proxy
 // @return *Browser
 // @return error
-func New(headless bool, proxy string) (*Browser, error) {
+func New(headless bool, proxy string, ocrBaseURL string) (*Browser, error) {
 	l := launcher.New().Headless(headless)
 	l.Set("ignore-certificate-errors").
 		Delete("disable-component-extensions-with-background-pages").
@@ -69,7 +75,31 @@ func New(headless bool, proxy string) (*Browser, error) {
 
 	browser := rod.New().ControlURL(l.MustLaunch()).Timeout(30 * time.Second).MustConnect()
 	browser.DefaultDevice(MyDevice)
-	return &Browser{browser: browser}, nil
+
+	b := &Browser{
+		browser:       browser,
+		authTokens:    make(map[string]string),
+		selectorCache: make(map[string]*Selector),
+	}
+
+	// 网络流量监听器
+	// router := browser.HijackRequests()
+	// router.MustAdd("*", func(ctx *rod.Hijack) {
+	//	b.handleNetworkResponse(ctx)
+	//	ctx.ContinueRequest(&proto.FetchContinueRequest{})
+	// })
+	//go router.Run()
+
+	// 初始化OCR识别处理器
+	if ocrBaseURL != "" {
+		captchaHandler, err := NewCaptchaHandler(b, ocrBaseURL)
+		if err != nil {
+			return nil, fmt.Errorf("failed to initialize captcha handler: %w", err)
+		}
+		b.captchaHandler = captchaHandler
+	}
+
+	return b, nil
 }
 
 // Close
@@ -186,6 +216,25 @@ func (b *Browser) findElement(selector, name string) (*rod.Element, error) {
 		"remember checkbox": {
 			"`input[type='checkbox']",
 		},
+		"captcha input": {
+			".el-image img[src*='captcha']",
+			".el-image[alt*='验证码']",
+			".el-image[alt*='captcha']",
+			".captcha-img",
+			".verify-img",
+			"img[alt*='验证码']",
+			"img[alt*='captcha']",
+			"img[src*='captcha']",
+			"img[src*='verify']",
+			"img[class*='captcha']",
+			"img[id*='captcha']",
+			"img[title*='验证码']",
+			"img[title*='captcha']",
+			"input[placeholder*='验证码']",
+		},
+		"captcha image": {
+			"img[src*='captcha']",
+		},
 	}
 
 	// Wait for element with retry and fallback
@@ -299,6 +348,37 @@ func (b *Browser) performLogin(selector *Selector, username, password string) er
 	//	return fmt.Errorf("failed to input password: %v", err)
 	//}
 	time.Sleep(500 * time.Millisecond)
+
+	// todo: Find captcha elements
+	if b.captchaHandler != nil {
+		// If captcha elements found, handle the challenge
+		if selector.CaptchaImg != "" && selector.CaptchaInput != "" {
+			logger.Debug("Handling captcha challenge")
+
+			// Create context with timeout for OCR
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+
+			captchaText, err := b.captchaHandler.HandleCaptcha(ctx, selector)
+			if err != nil {
+				return fmt.Errorf("failed to handle captcha: %w", err)
+			}
+
+			// Find and input captcha text
+			captchaEl, err := b.findElement(selector.CaptchaInput, "captcha input")
+			if err != nil {
+				return fmt.Errorf("failed to find captcha input: %w", err)
+			}
+
+			if err = captchaEl.Input(captchaText); err != nil {
+				return fmt.Errorf("failed to input captcha: %w", err)
+			}
+			time.Sleep(500 * time.Millisecond)
+			logger.WithField("captcha_text", captchaText).Debug("Captcha input completed")
+		} else {
+			logger.Debug("No captcha elements found, proceeding without captcha")
+		}
+	}
 
 	// todo: Find CheckBox elements
 	if _, err = b.page.Eval(`() => {
@@ -503,4 +583,90 @@ func (b *Browser) GetPage() *rod.Page {
 	defer b.mu.Unlock()
 
 	return b.page
+}
+
+// handleNetworkResponse
+// @Description: 检测网络请求
+// @receiver b
+// @param ctx
+func (b *Browser) handleNetworkResponse(ctx *rod.Hijack) {
+	logger := log.WithField("action", "handle_network_response")
+
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	// Load response and get status code
+	ctx.MustLoadResponse()
+	if resp := ctx.Response; resp != nil {
+		// Get status code from response
+		if status := ctx.Response.Payload().ResponseCode; status != 0 {
+			b.lastStatus = status
+			logger.WithFields(log.Fields{
+				"status": b.lastStatus,
+				"url":    ctx.Request.URL().String(),
+			}).Debug("Received response status")
+		}
+
+		// Check response headers for auth tokens and session identifiers
+		respHeaders := resp.Headers()
+		for key, values := range respHeaders {
+			if len(values) == 0 {
+				continue
+			}
+
+			lowerKey := strings.ToLower(key)
+			// Check for auth tokens
+			if strings.Contains(lowerKey, "token") ||
+				strings.Contains(lowerKey, "auth") ||
+				strings.Contains(lowerKey, "session") ||
+				strings.Contains(lowerKey, "sid") ||
+				strings.Contains(lowerKey, "jwt") {
+				b.authTokens[key] = values[0]
+				logger.WithFields(log.Fields{
+					"header": key,
+					"value":  values[0],
+					"type":   "auth_token",
+				}).Debug("Found authentication token in response header")
+			}
+			// Check for cookies with auth tokens
+			if lowerKey == "set-cookie" {
+				for _, cookie := range values {
+					if strings.Contains(strings.ToLower(cookie), "token") ||
+						strings.Contains(strings.ToLower(cookie), "auth") ||
+						strings.Contains(strings.ToLower(cookie), "session") ||
+						strings.Contains(strings.ToLower(cookie), "sid") ||
+						strings.Contains(strings.ToLower(cookie), "jwt") {
+						b.authTokens["cookie_"+key] = cookie
+						logger.WithFields(log.Fields{
+							"cookie": cookie,
+							"type":   "auth_cookie",
+						}).Debug("Found authentication cookie")
+					}
+				}
+			}
+		}
+
+		// Handle response body based on content type
+		contentType := respHeaders["Content-Type"]
+		if len(contentType) > 0 {
+			body := resp.Body()
+			b.lastResponse = string(body)
+			logger.WithFields(log.Fields{
+				"content_type": contentType[0],
+				"body_length":  len(b.lastResponse),
+			}).Debug("Stored response body")
+		}
+
+		// Handle redirects
+		if b.lastStatus == 302 || b.lastStatus == 301 {
+			location := respHeaders["Location"]
+			if len(location) > 0 {
+				logger.WithFields(log.Fields{
+					"status":   b.lastStatus,
+					"location": location[0],
+					"type":     "redirect",
+				}).Debug("Found redirect response")
+			}
+		}
+	}
 }

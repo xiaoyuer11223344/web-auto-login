@@ -208,17 +208,9 @@ func (b *Browser) findFormElements(form *rod.Element) (*Selector, error) {
 
 	loginBtnSelectors := []string{
 		"button[type='button']",
-		"input[name='commit'][type='submit']",
 		"button[type='submit']",
 		"input[type='submit']",
-		".radius",
-		".btn-login",
-		".login-btn",
-		"#login-btn",
-		"#loginBtn",
 		"input[value='Login']",
-		"button.btn-primary",
-		"button.submit",
 		"input[value*='Sign in']",
 		"input[value*='登录']",
 		"button[id*='login-btn']",
@@ -230,12 +222,44 @@ func (b *Browser) findFormElements(form *rod.Element) (*Selector, error) {
 		"input[class*='login_button']",
 		"button[class*='btn-login']",
 		"input[class*='btn-login']",
-
 		"button[value*='登录']",
+
+		".radius",
+		".btn-login",
+		".login-btn",
+		"button.btn-primary",
+		"button.submit",
+		"#login-btn",
+		"#loginBtn",
 	}
 
 	checkBoxSelectors := []string{
 		"input[type='checkbox']",
+	}
+
+	captchaInputSelectors := []string{
+		"input[placeholder*='验证码']",
+		"input[placeholder*='verification']",
+		"input[placeholder*='Verification']",
+	}
+
+	captchaImageSelectors := []string{
+		"img",
+		//"img[id*='captcha']",
+		//"img[id*='Captcha']",
+		//"img[alt*='验证码']",
+		//"img[alt*='captcha']",
+		//"img[src*='captcha']",
+		//"img[src*='verify']",
+		//"img[class*='captcha']",
+		//"img[id*='captcha']",
+		//"img[title*='验证码']",
+		//"img[title*='captcha']",
+		".el-image img[src*='captcha']",
+		".el-image[alt*='验证码']",
+		".el-image[alt*='captcha']",
+		".captcha-img",
+		".verify-img",
 	}
 
 	// Find username input with retry
@@ -281,7 +305,7 @@ foundButton:
 				if visible, _ := el.Visible(); visible {
 					selector.LoginBtn = el.MustGetXPath(false)
 					logger.WithField("xpath", selector.LoginBtn).Debug("Found login button")
-					goto foundCheckBox
+					goto foundRememberCheckBox
 				}
 			}
 		}
@@ -291,7 +315,7 @@ foundButton:
 		}
 	}
 
-foundCheckBox:
+foundRememberCheckBox:
 	for i := 0; i < MaxRetries; i++ {
 		for _, sel := range checkBoxSelectors {
 			// Find checkboxes (both remember me and agreement types)
@@ -301,7 +325,7 @@ foundCheckBox:
 					//if visible, _ := checkbox.Visible(); visible {}
 					selector.RememberMe = checkbox.MustGetXPath(false)
 					logger.WithField("xpath", selector.RememberMe).Debug("Found rememberMe checkbox")
-					goto over
+					goto foundCaptchaInput
 				}
 			}
 		}
@@ -312,8 +336,47 @@ foundCheckBox:
 		}
 	}
 
-over:
+foundCaptchaInput:
+	if b.captchaHandler != nil {
+		for i := 0; i < MaxRetries; i++ {
+			for _, sel := range captchaInputSelectors {
+				if el, err := form.Element(sel); err == nil && el != nil {
+					if visible, _ := el.Visible(); visible {
+						selector.CaptchaInput = el.MustGetXPath(false)
+						logger.WithField("xpath", selector.CaptchaInput).Debug("Found Captcha Input")
+						goto foundCaptchaImage
+					}
+				}
+			}
 
+			if i < MaxRetries-1 {
+				time.Sleep(BackoffFactor * time.Duration(1<<uint(i)))
+				logger.WithField("attempt", i+1).Debug("captcha input not found, retrying...")
+			}
+		}
+	}
+
+foundCaptchaImage:
+	if b.captchaHandler != nil && selector.CaptchaInput != "" {
+		for i := 0; i < MaxRetries; i++ {
+			for _, sel := range captchaImageSelectors {
+				if el, err := form.Element(sel); err == nil && el != nil {
+					if visible, _ := el.Visible(); visible {
+						selector.CaptchaImg = el.MustGetXPath(false)
+						logger.WithField("xpath", selector.CaptchaImg).Debug("Found Captcha Image")
+						goto over
+					}
+				}
+			}
+
+			if i < MaxRetries-1 {
+				time.Sleep(BackoffFactor * time.Duration(1<<uint(i)))
+				logger.WithField("attempt", i+1).Debug("captcha image not found, retrying...")
+			}
+		}
+	}
+
+over:
 	if selector.UserInput != "" && selector.PasswordInput != "" && selector.LoginBtn != "" {
 		return selector, nil
 	}
