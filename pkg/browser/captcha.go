@@ -5,6 +5,8 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"github.com/go-rod/rod/lib/proto"
+	"os"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -51,13 +53,15 @@ func (h *CaptchaHandler) HandleCaptcha(ctx context.Context, selector *Selector) 
 		return "", fmt.Errorf("captcha image not found: %w", err)
 	}
 
-	data, err := imgEL.Resource()
+	data, err := imgEL.Screenshot(proto.PageCaptureScreenshotFormat("png"), 1)
 	if err != nil {
 		return "", fmt.Errorf("captcha image data failed: %w", err)
 	}
 
-	//data := imgEL.MustResource()
-	//utils.OutputFile("img2.png", data)
+	err = os.WriteFile("1.png", data, 0644)
+	if err != nil {
+		return "", fmt.Errorf("captcha image data failed: %w", err)
+	}
 
 	base64Data := base64.StdEncoding.EncodeToString(data)
 	if len(base64Data) < ocr.MinImageSize || len(base64Data) > ocr.MaxImageSize {

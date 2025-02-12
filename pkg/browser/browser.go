@@ -51,7 +51,7 @@ var MyDevice = devices.Device{
 // @return *Browser
 // @return error
 func New(headless bool, proxy string, ocrBaseURL string) (*Browser, error) {
-	l := launcher.New().Headless(headless)
+	l := launcher.New().Headless(headless).NoSandbox(true)
 	l.Set("ignore-certificate-errors").
 		Delete("disable-component-extensions-with-background-pages").
 		Set("disable-extensions").
@@ -65,9 +65,8 @@ func New(headless bool, proxy string, ocrBaseURL string) (*Browser, error) {
 		Set("disable-gpu").
 		Set("no-default-browser-check").
 		Set("disable-images", "true").
-		Set("enable-automation", "false").                     // 防止监测 webdriver
-		Set("disable-blink-features", "AutomationControlled"). // 禁用 blink 特征，绕过了加速乐检测
-		NoSandbox(true)
+		Set("enable-automation", "false").                    // 防止监测 webdriver
+		Set("disable-blink-features", "AutomationControlled") // 禁用 blink 特征，绕过了加速乐检测
 
 	if proxy != "" {
 		l = l.Proxy(proxy)
@@ -284,7 +283,6 @@ func (b *Browser) performLogin(selector *Selector, username, password string) er
 	})
 
 	logger.Debug("Starting form interaction")
-
 	if selector == nil {
 		return fmt.Errorf("selector cannot be nil")
 	}
@@ -349,37 +347,6 @@ func (b *Browser) performLogin(selector *Selector, username, password string) er
 	//}
 	time.Sleep(500 * time.Millisecond)
 
-	// todo: Find captcha elements
-	if b.captchaHandler != nil {
-		// If captcha elements found, handle the challenge
-		if selector.CaptchaImg != "" && selector.CaptchaInput != "" {
-			logger.Debug("Handling captcha challenge")
-
-			// Create context with timeout for OCR
-			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-			defer cancel()
-
-			captchaText, err := b.captchaHandler.HandleCaptcha(ctx, selector)
-			if err != nil {
-				return fmt.Errorf("failed to handle captcha: %w", err)
-			}
-
-			// Find and input captcha text
-			captchaEl, err := b.findElement(selector.CaptchaInput, "captcha input")
-			if err != nil {
-				return fmt.Errorf("failed to find captcha input: %w", err)
-			}
-
-			if err = captchaEl.Input(captchaText); err != nil {
-				return fmt.Errorf("failed to input captcha: %w", err)
-			}
-			time.Sleep(500 * time.Millisecond)
-			logger.WithField("captcha_text", captchaText).Debug("Captcha input completed")
-		} else {
-			logger.Debug("No captcha elements found, proceeding without captcha")
-		}
-	}
-
 	// todo: Find CheckBox elements
 	if _, err = b.page.Eval(`() => {
 		const checkbox = document.querySelector('input[type="checkbox"]');
@@ -393,6 +360,39 @@ func (b *Browser) performLogin(selector *Selector, username, password string) er
 		return err
 	}
 	time.Sleep(500 * time.Millisecond)
+
+	// todo: Find captcha elements
+	if b.captchaHandler != nil {
+		// If captcha elements found, handle the challenge
+		if selector.CaptchaImg != "" && selector.CaptchaInput != "" {
+			logger.Debug("Handling captcha challenge")
+
+			// Create context with timeout for OCR
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+
+			var captchaText string
+			captchaText, err = b.captchaHandler.HandleCaptcha(ctx, selector)
+			if err != nil {
+				return fmt.Errorf("failed to handle captcha: %w", err)
+			}
+
+			// Find and input captcha text
+			var captchaEl *rod.Element
+			if captchaEl, err = b.findElement(selector.CaptchaInput, "captcha input"); err != nil {
+				return fmt.Errorf("failed to find captcha input: %w", err)
+			}
+
+			if err = captchaEl.Input(captchaText); err != nil {
+				return fmt.Errorf("failed to input captcha: %w", err)
+			}
+
+			time.Sleep(500 * time.Millisecond)
+			logger.WithField("captcha_text", captchaText).Debug("Captcha input completed")
+		} else {
+			logger.Debug("No captcha elements found, proceeding without captcha")
+		}
+	}
 
 	// todo: Find LoginBtn elements
 	var btnEL *rod.Element
@@ -432,7 +432,6 @@ func (b *Browser) performLogin(selector *Selector, username, password string) er
 	time.Sleep(500 * time.Millisecond)
 
 	// Brief wait for form submission
-
 	logger.WithField("duration", time.Since(start)).Debug("Login form submitted")
 
 	return nil

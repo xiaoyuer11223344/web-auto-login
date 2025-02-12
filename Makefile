@@ -2,5 +2,8 @@ ENV ?= prod
 export ENV
 export GOPROXY=https://goproxy.cn,direct
 
-build:
-	goreleaser build -f ./.goreleaser/build.yml --skip=validate --snapshot --clean
+mac:
+	goreleaser build -f ./.goreleaser/mac.yml --skip=validate --snapshot --clean
+
+linux:
+	goreleaser build -f ./.goreleaser/linux.yml --skip=validate --snapshot --clean

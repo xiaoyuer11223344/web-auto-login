@@ -245,6 +245,7 @@ func (b *Browser) findFormElements(form *rod.Element) (*Selector, error) {
 
 	captchaImageSelectors := []string{
 		"img",
+		"input[id='checkCode']",
 		//"img[id*='captcha']",
 		//"img[id*='Captcha']",
 		//"img[alt*='验证码']",
