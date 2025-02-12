@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/launcher"
-	"os"
 	"strings"
 	"sync"
 	"time"
@@ -217,6 +216,9 @@ func (b *Browser) findElement(selector, name string) (*rod.Element, error) {
 			"`input[type='checkbox']",
 		},
 		"captcha input": {
+			"input[placeholder*='验证码']",
+		},
+		"captcha image": {
 			".el-image img[src*='captcha']",
 			".el-image[alt*='验证码']",
 			".el-image[alt*='captcha']",
@@ -230,10 +232,6 @@ func (b *Browser) findElement(selector, name string) (*rod.Element, error) {
 			"img[id*='captcha']",
 			"img[title*='验证码']",
 			"img[title*='captcha']",
-			"input[placeholder*='验证码']",
-		},
-		"captcha image": {
-			"img[src*='captcha']",
 		},
 	}
 
@@ -450,6 +448,7 @@ func (b *Browser) Login(ctx context.Context, selector *Selector, username, passw
 
 	logger.Debug("Testing credentials")
 
+	// 兼容SDK调度
 	if selector == nil {
 		var err error
 		selector, err = b.DetectFormSelectors()
@@ -457,6 +456,8 @@ func (b *Browser) Login(ctx context.Context, selector *Selector, username, passw
 			return fmt.Errorf("failed to detect selectors: %w", err)
 		}
 	}
+
+	// 泛化选择器
 
 	// 每次任务登录的上下文
 	loginCtx, cancel := context.WithTimeout(ctx, time.Duration(10)*time.Second)
@@ -538,27 +539,6 @@ func (b *Browser) Navigate(ctx context.Context, url string) error {
 		// Wait for initial page load
 		if err = b.page.WaitLoad(); err != nil {
 			errChan <- fmt.Errorf("page load failed: %w", err)
-			return
-		}
-
-		// Find element by XPath
-		el, err := page.ElementX("/html/body/div[2]/div[2]/div/div[2]/div/div/form/label[4]/input")
-		if err != nil {
-			errChan <- err
-			return
-		}
-
-		// Take screenshot
-		data, err := el.Screenshot(proto.PageCaptureScreenshotFormat("png"), 1)
-		if err != nil {
-			errChan <- err
-			return
-		}
-
-		// Save to file
-		err = os.WriteFile("555.png", data, 0644)
-		if err != nil {
-			errChan <- err
 			return
 		}
 

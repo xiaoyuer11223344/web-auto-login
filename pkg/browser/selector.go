@@ -177,11 +177,11 @@ func (b *Browser) findFormElements(form *rod.Element) (*Selector, error) {
 
 	// Common selectors for form elements
 	userInputSelectors := []string{
+		"#username",
 		"input[placeholder='用户名']",
 		"input[placeholder='账号']",
 		"input[name='user[login]']",
 		"input[name='username']",
-		"#username",
 		"input[type='text']",
 		"input[name*='user']",
 		"input[id*='user']",
@@ -194,10 +194,10 @@ func (b *Browser) findFormElements(form *rod.Element) (*Selector, error) {
 	}
 
 	passInputSelectors := []string{
+		"#password",
 		"input[placeholder*='密码']",
 		"input[name='user[password]']",
 		"input[type='password']",
-		"#password",
 		"input[name='password']",
 		"input[name*='pass']",
 		"input[id*='pass']",
@@ -207,30 +207,34 @@ func (b *Browser) findFormElements(form *rod.Element) (*Selector, error) {
 	}
 
 	loginBtnSelectors := []string{
-		"button[type='button']",
-		"button[type='submit']",
-		"input[type='submit']",
 		"input[value='Login']",
 		"input[value*='Sign in']",
 		"input[value*='登录']",
 		"button[id*='login-btn']",
 		"input[id*='login-btn']",
-		"button[id*='commit']",
-		"input[name='commit']",
 		"button[class*='login_button']",
 		"div[class*='login_button']",
 		"input[class*='login_button']",
 		"button[class*='btn-login']",
 		"input[class*='btn-login']",
+		"div[class*='btn-login']",
 		"button[value*='登录']",
 
-		".radius",
-		".btn-login",
-		".login-btn",
-		"button.btn-primary",
-		"button.submit",
 		"#login-btn",
 		"#loginBtn",
+		".btn-login",
+		".login-btn",
+		".btn-primary",
+
+		// common
+		"button[id*='commit']",
+		"input[name='commit']",
+		"button[type='button']",
+		"button[type='submit']",
+		"input[type='submit']",
+
+		// ElementUI 提交按钮、取消按钮
+		".el-button",
 	}
 
 	checkBoxSelectors := []string{
@@ -245,7 +249,7 @@ func (b *Browser) findFormElements(form *rod.Element) (*Selector, error) {
 
 	captchaImageSelectors := []string{
 		"img",
-		"input[id='checkCode']",
+		//"input[id='checkCode']",
 		//"img[id*='captcha']",
 		//"img[id*='Captcha']",
 		//"img[alt*='验证码']",
@@ -256,11 +260,14 @@ func (b *Browser) findFormElements(form *rod.Element) (*Selector, error) {
 		//"img[id*='captcha']",
 		//"img[title*='验证码']",
 		//"img[title*='captcha']",
+
+		".captcha-img",
+		".verify-img",
+
+		// ElementUI
 		".el-image img[src*='captcha']",
 		".el-image[alt*='验证码']",
 		".el-image[alt*='captcha']",
-		".captcha-img",
-		".verify-img",
 	}
 
 	// Find username input with retry
@@ -313,6 +320,18 @@ foundButton:
 		if i < MaxRetries-1 {
 			time.Sleep(BackoffFactor * time.Duration(1<<uint(i)))
 			logger.WithField("attempt", i+1).Debug("Login button not found, retrying...")
+		}
+	}
+
+	// enhance login button
+	logger.WithField("attempt", 0).Debug("Login button not found, enhance retrying...")
+	for _, sel := range loginBtnSelectors {
+		if el, err := b.page.Element(sel); err == nil && el != nil {
+			if visible, _ := el.Visible(); visible {
+				selector.LoginBtn = el.MustGetXPath(false)
+				logger.WithField("xpath", selector.LoginBtn).Debug("Enhance Found login button")
+				goto foundRememberCheckBox
+			}
 		}
 	}
 
@@ -378,11 +397,12 @@ foundCaptchaImage:
 	}
 
 over:
-	if selector.UserInput != "" && selector.PasswordInput != "" && selector.LoginBtn != "" {
-		return selector, nil
-	}
-
-	return nil, fmt.Errorf("not form all elements found")
+	return selector, nil
+	//if selector.UserInput != "" && selector.PasswordInput != "" && selector.LoginBtn != "" {
+	//	return selector, nil
+	//}
+	//
+	//return nil, fmt.Errorf("not form all elements found")
 }
 
 // DetectFormSelectors
@@ -395,19 +415,20 @@ func (b *Browser) DetectFormSelectors() (*Selector, error) {
 
 	var err error
 	var form *rod.Element
+
 	if form, err = b.findForm(); err != nil {
 		// 匹配表单信息
 		return nil, err
 	}
 
+	// 匹配表单内标签元素
 	logger.Debug("Starting selector detection")
 	var selector *Selector
 	if selector, err = b.findFormElements(form); err == nil {
-		// 匹配表单内标签元素
 		return selector, nil
 	}
 
-	// 如果直接检测失败，请尝试表单评分方法
+	// 检测失败，尝试表单评分方法
 	logger.Debug("Direct detection failed, trying form scoring approach")
 	var formScores []*FormScore
 	forms, err := b.page.Elements("form")
@@ -415,7 +436,7 @@ func (b *Browser) DetectFormSelectors() (*Selector, error) {
 		return nil, fmt.Errorf("no forms found: %w", err)
 	}
 
-	// 对所有表格进行评分
+	// 对所有表单进行评分
 	for _, form = range forms {
 		score, formErr := scoreLoginForm(form)
 		if formErr == nil {

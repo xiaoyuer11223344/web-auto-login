@@ -78,6 +78,6 @@ func (h *CaptchaHandler) HandleCaptcha(ctx context.Context, selector *Selector) 
 		return "", ocr.ErrInvalidResponse
 	}
 
-	logger.WithField("result", result).Debug("Captcha recognized")
+	logger.WithField("result", result).Info("Captcha recognized")
 	return result, nil
 }

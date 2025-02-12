@@ -103,6 +103,6 @@ func (c *Client) RecognizeCaptcha(ctx context.Context, base64Image string) (stri
 		return "", fmt.Errorf("OCR service error: %s", ocrResp.Message)
 	}
 
-	logger.WithField("result", ocrResp.Data).Debug("OCR request successful")
+	logger.WithField("result", ocrResp).Info("OCR request successful")
 	return ocrResp.Data, nil
 }
