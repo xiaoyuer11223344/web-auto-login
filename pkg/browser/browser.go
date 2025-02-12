@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-rod/rod/lib/devices"
 	"github.com/go-rod/rod/lib/launcher"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -73,7 +74,7 @@ func New(headless bool, proxy string, ocrBaseURL string) (*Browser, error) {
 	}
 
 	browser := rod.New().ControlURL(l.MustLaunch()).Timeout(30 * time.Second).MustConnect()
-	browser.DefaultDevice(MyDevice)
+	//browser.DefaultDevice(MyDevice)
 
 	b := &Browser{
 		browser:       browser,
@@ -537,6 +538,27 @@ func (b *Browser) Navigate(ctx context.Context, url string) error {
 		// Wait for initial page load
 		if err = b.page.WaitLoad(); err != nil {
 			errChan <- fmt.Errorf("page load failed: %w", err)
+			return
+		}
+
+		// Find element by XPath
+		el, err := page.ElementX("/html/body/div[2]/div[2]/div/div[2]/div/div/form/label[4]/input")
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		// Take screenshot
+		data, err := el.Screenshot(proto.PageCaptureScreenshotFormat("png"), 1)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		// Save to file
+		err = os.WriteFile("555.png", data, 0644)
+		if err != nil {
+			errChan <- err
 			return
 		}
 

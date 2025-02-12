@@ -1,6 +1,0 @@
-userInput: "input[name='username']"
-passwordInput: "input[name='password']"
-loginBtn: "button[type='submit']"
-rememberMe: "input[type='checkbox']"
-captchaInput: ""
-captchaImg: ""

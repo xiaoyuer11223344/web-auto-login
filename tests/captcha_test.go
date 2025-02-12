@@ -44,7 +44,10 @@ func TestCaptchaScreenshot(t *testing.T) {
 	}
 
 	// Wait for page load
-	page.MustWaitLoad()
+	if err = page.WaitLoad(); err != nil {
+		t.Fatalf("page load failed: %v", err)
+		return
+	}
 
 	// Wait for network idle
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
