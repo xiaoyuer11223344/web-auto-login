@@ -174,83 +174,10 @@ func (b *Browser) findElement(selector, name string) (*rod.Element, error) {
 	var el *rod.Element
 	var err error
 
-	// Common CSS selectors for form elements
-	cssSelectors := map[string][]string{
-		"username input": {
-			"#user_login",
-			"input[name='user[login]']",
-			"input[name='username']",
-			"input[type='text']",
-			"input[id*='username']",
-			"input[placeholder*='用户名']",
-		},
-		"password input": {
-			"#user_password",
-			"input[name='user[password]']",
-			"input[name='password']",
-			"input[type='password']",
-			"input[id*='password']",
-			"input[placeholder*='密码']",
-		},
-		"login button": {
-			"button[type='submit']",
-			"input[type='submit']",
-
-			"button[id*='login-btn']",
-			"input[id*='login-btn']",
-
-			"button[id*='commit']",
-			"input[name='commit']",
-
-			"div[class='lui_login_button_div_c']",
-			"button[class*='login_button']",
-			"input[class*='login_button']",
-
-			"button[class*='btn-login']",
-			"input[class*='btn-login']",
-
-			"button[value*='登录']",
-			"input[value*='登录']",
-		},
-		"remember checkbox": {
-			"`input[type='checkbox']",
-		},
-		"captcha input": {
-			"input[placeholder*='验证码']",
-		},
-		"captcha image": {
-			".el-image img[src*='captcha']",
-			".el-image[alt*='验证码']",
-			".el-image[alt*='captcha']",
-			".captcha-img",
-			".verify-img",
-			"img[alt*='验证码']",
-			"img[alt*='captcha']",
-			"img[src*='captcha']",
-			"img[src*='verify']",
-			"img[class*='captcha']",
-			"img[id*='captcha']",
-			"img[title*='验证码']",
-			"img[title*='captcha']",
-		},
-	}
-
 	// Wait for element with retry and fallback
 	for i := 0; i < 3; i++ {
 		// Try XPath first
 		el, err = b.page.ElementX(selector)
-		// If XPath fails, try CSS selectors
-		if (err != nil || el == nil) && cssSelectors[name] != nil {
-			for _, cssSelector := range cssSelectors[name] {
-				el, err = b.page.Element(cssSelector)
-				if err == nil && el != nil {
-					if visible, _ := el.Visible(); visible {
-						logger.WithField("css_selector", cssSelector).Debug("Element found using CSS selector")
-						return el, nil
-					}
-				}
-			}
-		}
 
 		if err == nil && el != nil {
 			if visible, _ := el.Visible(); visible {
@@ -296,25 +223,6 @@ func (b *Browser) performLogin(selector *Selector, username, password string) er
 	if err = userEL.Input(username); err != nil {
 		return fmt.Errorf("failed to input username: %v", err)
 	}
-	//if _, err = userEL.Eval(`(xpath,value) => {
-	//		const xpathExpression = xpath;
-	//		const result = document.evaluate(
-	//			xpathExpression,
-	//			document,
-	//			null,
-	//			XPathResult.FIRST_ORDERED_NODE_TYPE,
-	//			null
-	//		);
-	//
-	//		const element = result.singleNodeValue;
-	//		if (element) {
-	//			element.value = value
-	//			return true;
-	//		}
-	//		return false;
-	//	}`, selector.UserInput, username); err != nil {
-	//	return fmt.Errorf("failed to input username: %v", err)
-	//}
 	time.Sleep(500 * time.Millisecond)
 
 	// todo: Find PasswordInput elements
@@ -325,25 +233,6 @@ func (b *Browser) performLogin(selector *Selector, username, password string) er
 	if err = passEl.Input(password); err != nil {
 		return fmt.Errorf("failed to input password: %v", err)
 	}
-	//if _, err = passEl.Eval(`(xpath,value) => {
-	//		const xpathExpression = xpath;
-	//		const result = document.evaluate(
-	//			xpathExpression,
-	//			document,
-	//			null,
-	//			XPathResult.FIRST_ORDERED_NODE_TYPE,
-	//			null
-	//		);
-	//
-	//		const element = result.singleNodeValue;
-	//		if (element) {
-	//			element.value = value
-	//			return true;
-	//		}
-	//		return false;
-	//	}`, selector.PasswordInput, password); err != nil {
-	//	return fmt.Errorf("failed to input password: %v", err)
-	//}
 	time.Sleep(500 * time.Millisecond)
 
 	// todo: Find CheckBox elements
@@ -456,8 +345,6 @@ func (b *Browser) Login(ctx context.Context, selector *Selector, username, passw
 			return fmt.Errorf("failed to detect selectors: %w", err)
 		}
 	}
-
-	// 泛化选择器
 
 	// 每次任务登录的上下文
 	loginCtx, cancel := context.WithTimeout(ctx, time.Duration(10)*time.Second)

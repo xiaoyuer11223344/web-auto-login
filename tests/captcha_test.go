@@ -38,7 +38,7 @@ func TestCaptchaScreenshot(t *testing.T) {
 	defer page.MustClose()
 
 	// Navigate to target URL
-	err := page.Navigate("http://120.46.192.23:90/vul/burteforce/bf_client.php")
+	err := page.Navigate("https://dftc-wps.dfmc.com.cn/")
 	if err != nil {
 		t.Fatalf("Failed to navigate: %v", err)
 	}
@@ -55,7 +55,7 @@ func TestCaptchaScreenshot(t *testing.T) {
 	page.Context(ctx).MustWaitIdle()
 
 	// Find element by XPath
-	el, err := page.ElementX("/html/body/div[2]/div[2]/div/div[2]/div/div/form/label[4]/input")
+	el, err := page.ElementX("//*[@id=\"LoginContainer\"]/div/div[1]/div[2]/div[3]/div/img")
 	if err != nil {
 		t.Fatalf("Failed to find element: %v", err)
 	}

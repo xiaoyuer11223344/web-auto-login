@@ -1,6 +1,6 @@
-2025-02-12 13:06:24 INFO cmd/root.go:34 Program Started
-2025-02-12 13:06:24 INFO root/config.go:55 Target Count => 1
-2025-02-12 13:06:24 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+2025-02-12 19:20:26 INFO cmd/root.go:34 Program Started
+2025-02-12 19:20:26 INFO root/config.go:55 Target Count => 1
+2025-02-12 19:20:26 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
 {
   "headlessOptions": {
     "headless": false,
@@ -13,28 +13,10 @@
   "delay": 1,
   "maxCrackTime": 300
 }
-2025-02-12 13:06:24 INFO [weblogin] weblogin/runner.go:76 Run Started => https://open.huolala.cn/#/log-in
-2025-02-12 13:06:37 INFO [weblogin] weblogin/runner.go:98 login selector =>
-{
-  "userInput": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[1]/div/div/input",
-  "passwordInput": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[3]/div/div/input",
-  "captchaInput": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[2]/div/div[1]/input",
-  "captchaImg": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[2]",
-  "loginBtn": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/button"
-}
-2025-02-12 13:06:37 INFO [weblogin] weblogin/runner.go:122 Run Count => 11
-2025-02-12 13:06:37 DEBUG [weblogin] weblogin/runner.go:141 login => admin:1q2w3e4r
-2025-02-12 13:06:37 DEBUG [weblogin] weblogin/runner.go:141 login => admin:12345
-2025-02-12 13:06:37 DEBUG [weblogin] weblogin/runner.go:141 login => admin:123456
-2025-02-12 13:06:47 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
-2025-02-12 13:06:48 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
-2025-02-12 13:06:48 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
-2025-02-12 13:06:49 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Aa123456
-2025-02-12 13:06:49 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin
-2025-02-12 13:06:49 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin123
-2025-02-12 13:19:04 INFO cmd/root.go:34 Program Started
-2025-02-12 13:19:04 INFO root/config.go:55 Target Count => 1
-2025-02-12 13:19:04 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+2025-02-12 19:20:26 INFO [weblogin] weblogin/runner.go:76 Run Started => https://81.70.33.47:4567/
+2025-02-12 19:21:04 INFO cmd/root.go:34 Program Started
+2025-02-12 19:21:04 INFO root/config.go:55 Target Count => 1
+2025-02-12 19:21:04 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
 {
   "headlessOptions": {
     "headless": false,
@@ -47,22 +29,150 @@
   "delay": 1,
   "maxCrackTime": 300
 }
-2025-02-12 13:19:04 INFO [weblogin] weblogin/runner.go:76 Run Started => https://open.huolala.cn/#/log-in
-2025-02-12 13:19:15 INFO [weblogin] weblogin/runner.go:98 login selector =>
+2025-02-12 19:21:04 INFO [weblogin] weblogin/runner.go:76 Run Started => https://106.14.66.138/
+2025-02-12 19:21:16 INFO [weblogin] weblogin/runner.go:98 login selector =>
 {
-  "userInput": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[1]/div/div/input",
-  "passwordInput": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[3]/div/div/input",
-  "captchaInput": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[2]/div/div[1]/input",
-  "captchaImg": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/form/div[2]",
-  "loginBtn": "/html/body/div/div/div/div[2]/div/div[2]/div[2]/button"
+  "userInput": "/html/body/div/div/div[2]/form/ul/li[2]/div/input",
+  "passwordInput": "/html/body/div/div/div[2]/form/ul/li[3]/div/input",
+  "loginBtn": "/html/body/div/div/div[2]/form/ul/li[4]/button"
 }
-2025-02-12 13:19:15 INFO [weblogin] weblogin/runner.go:122 Run Count => 11
-2025-02-12 13:19:15 DEBUG [weblogin] weblogin/runner.go:141 login => admin:1q2w3e4r
-2025-02-12 13:19:15 DEBUG [weblogin] weblogin/runner.go:141 login => admin:123456
-2025-02-12 13:19:15 DEBUG [weblogin] weblogin/runner.go:141 login => admin:12345
-2025-02-12 13:19:26 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
-2025-02-12 13:19:26 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
-2025-02-12 13:19:26 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: OCR result err: 
-2025-02-12 13:19:27 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Aa123456
-2025-02-12 13:19:27 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin
-2025-02-12 13:19:28 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin123
+2025-02-12 19:21:16 INFO [weblogin] weblogin/runner.go:122 Run Count => 11
+2025-02-12 19:21:16 DEBUG [weblogin] weblogin/runner.go:141 login => admin:123456
+2025-02-12 19:21:16 DEBUG [weblogin] weblogin/runner.go:141 login => admin:12345
+2025-02-12 19:21:16 DEBUG [weblogin] weblogin/runner.go:141 login => admin:1q2w3e4r
+2025-02-12 19:21:25 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-12 19:21:26 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-12 19:21:26 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Aa123456
+2025-02-12 19:21:27 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin
+2025-02-12 19:21:42 INFO cmd/root.go:34 Program Started
+2025-02-12 19:21:42 INFO root/config.go:55 Target Count => 1
+2025-02-12 19:21:42 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+{
+  "headlessOptions": {
+    "headless": false,
+    "debug": false,
+    "maxAttempts": 3,
+    "ocrBaseURL": "http://120.26.57.12:8000/"
+  },
+  "threads": 3,
+  "crackAll": false,
+  "delay": 1,
+  "maxCrackTime": 300
+}
+2025-02-12 19:21:42 INFO [weblogin] weblogin/runner.go:76 Run Started => https://81.70.33.47:4567/
+2025-02-12 19:21:53 INFO [weblogin] weblogin/runner.go:98 login selector =>
+{
+  "userInput": "/html/body/main/div/div[1]/div/div[2]/form/table/tbody/tr[1]/td/input",
+  "passwordInput": "/html/body/main/div/div[1]/div/div[2]/form/table/tbody/tr[2]/td/input",
+  "loginBtn": "/html/body/main/div/div[1]/div/div[2]/form/table/tbody/tr[4]/td[2]/button"
+}
+2025-02-12 19:21:53 INFO [weblogin] weblogin/runner.go:122 Run Count => 11
+2025-02-12 19:21:53 DEBUG [weblogin] weblogin/runner.go:141 login => admin:123456
+2025-02-12 19:21:53 DEBUG [weblogin] weblogin/runner.go:141 login => admin:12345
+2025-02-12 19:21:53 DEBUG [weblogin] weblogin/runner.go:141 login => admin:1q2w3e4r
+2025-02-12 19:22:03 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-12 19:22:03 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-12 19:22:04 DEBUG [weblogin] rod/login.go:43 提示: 登录失败，请检查您的用户名或密码是否填写正确。
+2025-02-12 19:22:04 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Aa123456
+2025-02-12 19:22:04 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin
+2025-02-12 19:22:07 DEBUG [weblogin] rod/login.go:139 页面长度没有变化
+2025-02-12 19:22:08 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin123
+2025-02-12 19:22:14 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-12 19:22:14 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-12 19:22:15 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin@123
+2025-02-12 19:22:15 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Admin@123
+2025-02-12 19:22:21 DEBUG [weblogin] rod/login.go:43 提示: 登录失败，请检查您的用户名或密码是否填写正确。
+2025-02-12 19:22:24 DEBUG [weblogin] rod/login.go:139 页面长度没有变化
+2025-02-12 19:22:25 DEBUG [weblogin] weblogin/runner.go:141 login => admin:P@sswOrd
+2025-02-12 19:22:26 DEBUG [weblogin] rod/login.go:43 提示: 登录失败，请检查您的用户名或密码是否填写正确。
+2025-02-12 19:22:26 DEBUG [weblogin] rod/login.go:43 提示: 登录失败，请检查您的用户名或密码是否填写正确。
+2025-02-12 19:22:29 DEBUG [weblogin] rod/login.go:139 页面长度没有变化
+2025-02-12 19:22:30 DEBUG [weblogin] rod/login.go:139 页面长度没有变化
+2025-02-12 19:22:31 DEBUG [weblogin] weblogin/runner.go:141 login => admin:password
+2025-02-12 19:22:31 DEBUG [weblogin] weblogin/runner.go:141 login => admin:quertyuiop
+2025-02-12 19:22:37 DEBUG [weblogin] rod/login.go:43 提示: 登录失败，请检查您的用户名或密码是否填写正确。
+2025-02-12 19:22:40 DEBUG [weblogin] rod/login.go:139 页面长度没有变化
+2025-02-12 19:22:41 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-12 19:22:41 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-12 19:22:42 INFO [weblogin] weblogin/runner.go:191 Run Result https://81.70.33.47:4567/ => 0
+2025-02-12 19:22:42 INFO [weblogin] weblogin/runner.go:192 Run Finished spent=1m0.239545542s
+2025-02-12 19:22:42 WARN cmd/root.go:47 Result is Empty
+2025-02-12 19:22:42 INFO cmd/root.go:69 Run Finished spent=1m0.241520333s
+2025-02-12 19:22:42 INFO cmd/root.go:70 Program Exited
+2025-02-12 19:56:57 INFO cmd/root.go:34 Program Started
+2025-02-12 19:56:57 INFO root/config.go:55 Target Count => 1
+2025-02-12 19:56:57 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+{
+  "headlessOptions": {
+    "headless": false,
+    "debug": false,
+    "maxAttempts": 3,
+    "ocrBaseURL": "http://120.26.57.12:8000/"
+  },
+  "threads": 3,
+  "crackAll": false,
+  "delay": 1,
+  "maxCrackTime": 300
+}
+2025-02-12 19:56:57 INFO [weblogin] weblogin/runner.go:76 Run Started => https://app.jxwdyf.com:8130/
+2025-02-12 19:57:10 INFO [weblogin] weblogin/runner.go:98 login selector =>
+{
+  "userInput": "/html/body/div/div/div/div[2]/div[2]/div[2]/input",
+  "passwordInput": "/html/body/div/div/div/div[2]/div[2]/div[2]/input",
+  "loginBtn": "/html/body/div/div/div/div[2]/div[2]/div[5]/button"
+}
+2025-02-12 19:57:10 INFO [weblogin] weblogin/runner.go:122 Run Count => 11
+2025-02-12 19:57:10 DEBUG [weblogin] weblogin/runner.go:141 login => admin:1q2w3e4r
+2025-02-12 19:57:10 DEBUG [weblogin] weblogin/runner.go:141 login => admin:12345
+2025-02-12 19:57:10 DEBUG [weblogin] weblogin/runner.go:141 login => admin:123456
+2025-02-12 19:57:20 ERROR [weblogin] weblogin/runner.go:147 login err: not found username input: cannot find element
+2025-02-12 19:57:21 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Aa123456
+2025-02-12 19:57:26 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin
+2025-02-12 19:57:27 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin123
+2025-02-12 19:57:38 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin@123
+2025-02-12 19:57:41 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Admin@123
+2025-02-12 23:20:21 INFO cmd/root.go:34 Program Started
+2025-02-12 23:20:21 INFO root/config.go:55 Target Count => 1
+2025-02-12 23:20:21 INFO [weblogin] weblogin/runner.go:45 Scan Configuration =>
+{
+  "headlessOptions": {
+    "headless": false,
+    "debug": false,
+    "maxAttempts": 3,
+    "ocrBaseURL": "http://120.26.57.12:8000/"
+  },
+  "threads": 3,
+  "crackAll": false,
+  "delay": 1,
+  "maxCrackTime": 300
+}
+2025-02-12 23:20:21 INFO [weblogin] weblogin/runner.go:76 Run Started => https://noa.luckyfilm.com/
+2025-02-12 23:21:02 INFO [weblogin] weblogin/runner.go:98 login selector =>
+{
+  "userInput": "/html/body/div[1]/div/div/div[2]/div[2]/div[2]/input",
+  "passwordInput": "/html/body/div[1]/div/div/div[2]/div[2]/div[2]/input",
+  "captchaInput": "/html/body/div[1]/div/div/div[2]/div[2]/div[3]/input",
+  "captchaImg": "/html/body/div[1]/div/div/div[1]",
+  "loginBtn": "/html/body/div[1]/div/div/div[3]/div/button"
+}
+2025-02-12 23:21:02 INFO [weblogin] weblogin/runner.go:122 Run Count => 11
+2025-02-12 23:21:02 DEBUG [weblogin] weblogin/runner.go:141 login => admin:1q2w3e4r
+2025-02-12 23:21:02 DEBUG [weblogin] weblogin/runner.go:141 login => admin:12345
+2025-02-12 23:21:02 DEBUG [weblogin] weblogin/runner.go:141 login => admin:123456
+2025-02-12 23:21:12 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: get image base64 err: no image found in the element
+2025-02-12 23:21:13 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: get image base64 err: no image found in the element
+2025-02-12 23:21:13 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: get image base64 err: no image found in the element
+2025-02-12 23:21:13 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Aa123456
+2025-02-12 23:21:14 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin
+2025-02-12 23:21:15 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin123
+2025-02-12 23:21:23 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: get image base64 err: no image found in the element
+2025-02-12 23:21:24 DEBUG [weblogin] weblogin/runner.go:141 login => admin:admin@123
+2025-02-12 23:21:24 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: get image base64 err: no image found in the element
+2025-02-12 23:21:25 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: get image base64 err: no image found in the element
+2025-02-12 23:21:26 DEBUG [weblogin] weblogin/runner.go:141 login => admin:Admin@123
+2025-02-12 23:21:26 DEBUG [weblogin] weblogin/runner.go:141 login => admin:P@sswOrd
+2025-02-12 23:21:34 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: get image base64 err: no image found in the element
+2025-02-12 23:21:35 DEBUG [weblogin] weblogin/runner.go:141 login => admin:password
+2025-02-12 23:21:36 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: get image base64 err: no image found in the element
+2025-02-12 23:21:37 DEBUG [weblogin] weblogin/runner.go:141 login => admin:quertyuiop
+2025-02-12 23:21:38 ERROR [weblogin] weblogin/runner.go:147 login err: get captcha err: get image base64 err: no image found in the element

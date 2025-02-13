@@ -1,10 +1,8 @@
 package browser
 
 import (
-	"context"
 	"fmt"
 	"sort"
-	"strings"
 	"time"
 
 	"github.com/go-rod/rod"
@@ -12,13 +10,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type FormScore struct {
+type FormDesc struct {
 	Form      *rod.Element
 	Score     int
 	HasLogin  bool
 	HasPass   bool
 	HasSubmit bool
 	Position  proto.Point
+	selector  *Selector
 }
 
 type Selector struct {
@@ -31,223 +30,83 @@ type Selector struct {
 	form          *rod.Element
 }
 
-func scoreLoginForm(form *rod.Element) (*FormScore, error) {
-	score := &FormScore{Form: form}
-
-	// GitLab-style inputs (highest priority)
-	if el, _ := form.Element("input[name='user[login]']"); el != nil {
-		score.Score += 10
-		score.HasLogin = true
-	}
-	if el, _ := form.Element("input[name='user[password]']"); el != nil {
-		score.Score += 10
-		score.HasPass = true
-	}
-
-	// Standard inputs
-	if el, _ := form.Element("input[type='password']"); el != nil {
-		score.Score += 5
-		score.HasPass = true
-	}
-
-	// Form attributes
-	if action, _ := form.Attribute("action"); action != nil {
-		if strings.Contains(*action, "login") || strings.Contains(*action, "signin") {
-			score.Score += 3
-		}
-	}
-
-	// Submit button detection
-	submitSelectors := []string{
-		"input[type='submit']",
-		"button[type='submit']",
-		"input[name='commit'][type='submit']",
-		"button:contains('Sign in')",
-		"button:contains('Login')",
-	}
-
-	for _, sel := range submitSelectors {
-		if el, _ := form.Element(sel); el != nil {
-			if visible, _ := el.Visible(); visible {
-				score.Score += 2
-				score.HasSubmit = true
-				break
-			}
-		}
-	}
-
-	// Get form position
-	if shape, err := form.Shape(); err == nil && len(shape.Quads) > 0 {
-		quad := shape.Quads[0]
-		score.Position = proto.Point{X: quad[0], Y: quad[1]}
-	}
-
-	return score, nil
-}
-
-func (b *Browser) tryFindElement(selector string) (*rod.Element, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	// Wait for dynamic content
-	time.Sleep(2 * time.Second)
-
-	// Wait for page to stabilize and JavaScript to execute
-	time.Sleep(3 * time.Second)
-
-	logger := log.WithField("action", "find_element")
-	logger.WithField("selector", selector).Debug("Attempting to find element")
-
-	var el *rod.Element
-	var err error
-
-	if strings.HasPrefix(selector, "//") {
-		el, err = b.page.Context(ctx).ElementX(selector)
-	} else {
-		el, err = b.page.Context(ctx).Element(selector)
-	}
-
-	if err != nil {
-		return nil, fmt.Errorf("element not found: %v", err)
-	}
-
-	if el == nil {
-		return nil, fmt.Errorf("element not found with selector %s", selector)
-	}
-
-	if err := el.Context(ctx).WaitVisible(); err != nil {
-		return nil, fmt.Errorf("element not visible: %v", err)
-	}
-
-	return el, nil
-}
-
-// findForm
-// @Description: 匹配表单元素
-// @receiver b
-// @return *rod.Element
-// @return error
-func (b *Browser) findForm() (*rod.Element, error) {
-	var form *rod.Element
-	var err error
-
-	logger := log.WithField("action", "detect_form")
-	logger.Debug("Starting form detection")
-
-	for i := 0; i < MaxRetries; i++ {
-		if form, err = b.page.Element("form"); err == nil && form != nil {
-			if visible, _ := form.Visible(); visible {
-				break
-			}
-		}
-		if i < MaxRetries-1 {
-			time.Sleep(BackoffFactor * time.Duration(1<<uint(i)))
-		}
-	}
-
-	if form == nil {
-		// 没匹配到表单的话则进行结束
-		return nil, fmt.Errorf("no visible form found")
-	} else {
-		// 匹配到表单的话则进行打印信息
-		formDetails := map[string]interface{}{
-			"tag":      form.MustEval("() => this.tagName ").String(),
-			"id":       form.MustEval("() => this.id ").String(),
-			"action":   form.MustEval("() => this.action ").String(),
-			"method":   form.MustEval("() => this.method ").String(),
-			"position": form.MustShape().Box(),
-		}
-		logger.WithFields(log.Fields{"formDetails": formDetails}).Info("Form Details")
-	}
-
-	return form, nil
-
-}
-
-// findFormElements
-// @Description: 匹配表单内元素
-// @receiver b
-// @param form
-// @return *Selector
-// @return error
-func (b *Browser) findFormElements(form *rod.Element) (*Selector, error) {
-	logger := log.WithField("action", "find_form_elements")
-
-	selector := &Selector{form: form}
+var (
 
 	// Common selectors for form elements
-	userInputSelectors := []string{
-		"#username",
-		"input[placeholder='用户名']",
-		"input[placeholder='账号']",
-		"input[name='user[login]']",
-		"input[name='username']",
-		"input[type='text']",
-		"input[name*='user']",
-		"input[id*='user']",
-		"input[class*='user']",
-		"input[name='uid']",
+	userInputSelectors = []string{
 		"input[id='uid']",
 		"input[id='usernameIpt']",
-		"input[name='account']",
 		"input[id='account']",
+		"input[id='username']",
+		"input[id*='user']",
+		"input[id='loginid']",
+		"input[name*='user']",
+		"input[class*='user']",
+
+		"input[placeholder*='账号']",
+		"input[placeholder*='用户']",
+		"input[placeholder*='工号']",
+		"input[placeholder*='邮箱']",
+
+		"input[name='user[login]']",
+		"input[name='username']",
+		"input[name='uid']",
+		"input[name='account']",
 	}
 
-	passInputSelectors := []string{
-		"#password",
+	passInputSelectors = []string{
+		"input[type='password']",
+		"input[placeholder='密码']",
 		"input[placeholder*='密码']",
 		"input[name='user[password]']",
-		"input[type='password']",
-		"input[name='password']",
-		"input[name*='pass']",
-		"input[id*='pass']",
-		"input[class*='pass']",
 		"input[name='pwd']",
 		"input[id='pwd']",
+		"input[id*='pass']",
+		"input[name*='pass']",
+		"input[class*='pass']",
 	}
 
-	loginBtnSelectors := []string{
-		"input[value='Login']",
-		"input[value*='Sign in']",
-		"input[value*='登录']",
-		"button[id*='login-btn']",
-		"input[id*='login-btn']",
-		"button[class*='login_button']",
-		"div[class*='login_button']",
-		"input[class*='login_button']",
-		"button[class*='btn-login']",
-		"input[class*='btn-login']",
-		"div[class*='btn-login']",
-		"button[value*='登录']",
-
-		"#login-btn",
-		"#loginBtn",
-		".btn-login",
-		".login-btn",
-		".btn-primary",
-
-		// common
-		"button[id*='commit']",
-		"input[name='commit']",
-		"button[type='button']",
+	loginBtnSelectors = []string{
+		//"button[name='submit']",
 		"button[type='submit']",
-		"input[type='submit']",
-
-		// ElementUI 提交按钮、取消按钮
-		".el-button",
+		"button[type='button']",
+		//"button[id*='login-btn']",
+		//"button[class*='login_button']",
+		//"button[class*='btn-login']",
+		//"button[class*='submit-btn']",
+		//"button[class*='el-button']",
+		//"button[value*='登录']",
+		//"button[id*='commit']",
+		//
+		//"input[value='Login']",
+		//"input[value*='Sign in']",
+		//"input[id*='login-btn']",
+		//"input[class*='login_button']",
+		//"input[class*='btn-login']",
+		//"input[name='commit']",
+		//"input[type='submit']",
+		//
+		//"div[class*='login_button']",
+		//"div[class*='btn-login']",
+		//
+		//"#login-btn",
+		//"#loginBtn",
+		//".btn-login",
+		//".login-btn",
+		//".btn-primary",
 	}
 
-	checkBoxSelectors := []string{
+	checkBoxSelectors = []string{
 		"input[type='checkbox']",
 	}
 
-	captchaInputSelectors := []string{
+	captchaInputSelectors = []string{
 		"input[placeholder*='验证码']",
 		"input[placeholder*='verification']",
 		"input[placeholder*='Verification']",
 	}
 
-	captchaImageSelectors := []string{
+	captchaImageSelectors = []string{
 		"img",
 		//"input[id='checkCode']",
 		//"img[id*='captcha']",
@@ -269,10 +128,55 @@ func (b *Browser) findFormElements(form *rod.Element) (*Selector, error) {
 		".el-image[alt*='验证码']",
 		".el-image[alt*='captcha']",
 	}
+)
+
+func (b *Browser) scoreLoginForm(form *rod.Element) (*FormDesc, error) {
+	logger := log.WithField("action", "socre_login_form")
+	_ = logger
+
+	formDesc := &FormDesc{Form: form}
+
+	_selector, err := b.findFormElements(form, true)
+	if err != nil {
+		return nil, err
+	}
+
+	formDesc.selector = _selector
+
+	if _selector.UserInput != "" {
+		formDesc.Score++
+	}
+	if _selector.PasswordInput != "" {
+		formDesc.Score++
+	}
+	if _selector.LoginBtn != "" {
+		formDesc.Score++
+	}
+	if _selector.CaptchaInput != "" {
+		formDesc.Score++
+	}
+	if _selector.CaptchaImg != "" {
+		formDesc.Score++
+	}
+
+	return formDesc, nil
+}
+
+// findFormElements
+// @Description: 匹配表单内元素
+// @receiver b
+// @param form
+// @return *Selector
+// @return error
+func (b *Browser) findFormElements(form *rod.Element, enhance bool) (*Selector, error) {
+	logger := log.WithField("action", "find_form_elements")
+
+	selector := &Selector{form: form}
 
 	// Find username input with retry
 	for i := 0; i < MaxRetries; i++ {
 		for _, sel := range userInputSelectors {
+			fmt.Println(sel)
 			if el, err := form.Element(sel); err == nil && el != nil {
 				if visible, _ := el.Visible(); visible {
 					selector.UserInput = el.MustGetXPath(false)
@@ -291,6 +195,7 @@ foundPass:
 	// Find password input with retry
 	for i := 0; i < MaxRetries; i++ {
 		for _, sel := range passInputSelectors {
+			fmt.Println(sel)
 			if el, err := form.Element(sel); err == nil && el != nil {
 				if visible, _ := el.Visible(); visible {
 					selector.PasswordInput = el.MustGetXPath(false)
@@ -324,13 +229,15 @@ foundButton:
 	}
 
 	// enhance login button
-	logger.WithField("attempt", 0).Debug("Login button not found, enhance retrying...")
-	for _, sel := range loginBtnSelectors {
-		if el, err := b.page.Element(sel); err == nil && el != nil {
-			if visible, _ := el.Visible(); visible {
-				selector.LoginBtn = el.MustGetXPath(false)
-				logger.WithField("xpath", selector.LoginBtn).Debug("Enhance Found login button")
-				goto foundRememberCheckBox
+	if enhance {
+		logger.WithField("attempt", 0).Debug("Login button not found, enhance retrying...")
+		for _, sel := range loginBtnSelectors {
+			if el, err := b.page.Element(sel); err == nil && el != nil {
+				if visible, _ := el.Visible(); visible {
+					selector.LoginBtn = el.MustGetXPath(false)
+					logger.WithField("xpath", selector.LoginBtn).Debug("Enhance Found login button")
+					goto foundRememberCheckBox
+				}
 			}
 		}
 	}
@@ -397,12 +304,147 @@ foundCaptchaImage:
 	}
 
 over:
-	return selector, nil
-	//if selector.UserInput != "" && selector.PasswordInput != "" && selector.LoginBtn != "" {
-	//	return selector, nil
-	//}
-	//
-	//return nil, fmt.Errorf("not form all elements found")
+	//return selector, nil
+	if selector.UserInput != "" && selector.PasswordInput != "" && selector.LoginBtn != "" {
+		return selector, nil
+	}
+
+	return nil, fmt.Errorf("not form all elements found")
+}
+
+// findFormElements
+// @Description: 匹配表单内元素
+// @receiver b
+// @param form
+// @return *Selector
+// @return error
+func (b *Browser) findElements() (*Selector, error) {
+	logger := log.WithField("action", "find_form_elements")
+
+	selector := &Selector{}
+
+	// Find username input with retry
+	for i := 0; i < MaxRetries; i++ {
+		for _, sel := range userInputSelectors {
+			if el, err := b.page.Element(sel); err == nil && el != nil {
+				if visible, _ := el.Visible(); visible {
+					selector.UserInput = el.MustGetXPath(false)
+					logger.WithField("xpath", selector.UserInput).Debug("Found username input")
+					goto foundPass
+				}
+			}
+		}
+		if i < MaxRetries-1 {
+			time.Sleep(BackoffFactor * time.Duration(1<<uint(i)))
+			logger.WithField("attempt", i+1).Debug("Username input not found, retrying...")
+		}
+	}
+
+foundPass:
+	// Find password input with retry
+	for i := 0; i < MaxRetries; i++ {
+		for _, sel := range passInputSelectors {
+			if el, err := b.page.Element(sel); err == nil && el != nil {
+				if visible, _ := el.Visible(); visible {
+					selector.PasswordInput = el.MustGetXPath(false)
+					logger.WithField("xpath", selector.PasswordInput).Debug("Found password input")
+					goto foundButton
+				}
+			}
+		}
+		if i < MaxRetries-1 {
+			time.Sleep(BackoffFactor * time.Duration(1<<uint(i)))
+			logger.WithField("attempt", i+1).Debug("Password input not found, retrying...")
+		}
+	}
+
+foundButton:
+	// Find login button with retry
+	fmt.Println(b.page.HTML())
+	for i := 0; i < MaxRetries; i++ {
+		for _, sel := range loginBtnSelectors {
+			if el, err := b.page.Element(sel); err == nil && el != nil {
+				if visible, _ := el.Visible(); visible {
+					selector.LoginBtn = el.MustGetXPath(false)
+					logger.WithField("xpath", selector.LoginBtn).Debug("Found login button")
+					goto foundRememberCheckBox
+				}
+			}
+		}
+		if i < MaxRetries-1 {
+			time.Sleep(BackoffFactor * time.Duration(1<<uint(i)))
+			logger.WithField("attempt", i+1).Debug("Login button not found, retrying...")
+		}
+	}
+
+foundRememberCheckBox:
+	for i := 0; i < MaxRetries; i++ {
+		for _, sel := range checkBoxSelectors {
+			// Find checkboxes (both remember me and agreement types)
+			checkboxes, err := b.page.Elements(sel)
+			if err == nil && len(checkboxes) > 0 {
+				for _, checkbox := range checkboxes {
+					//if visible, _ := checkbox.Visible(); visible {}
+					selector.RememberMe = checkbox.MustGetXPath(false)
+					logger.WithField("xpath", selector.RememberMe).Debug("Found rememberMe checkbox")
+					goto foundCaptchaInput
+				}
+			}
+		}
+
+		if i < MaxRetries-1 {
+			time.Sleep(BackoffFactor * time.Duration(1<<uint(i)))
+			logger.WithField("attempt", i+1).Debug("rememberMe checkbox not found, retrying...")
+		}
+	}
+
+foundCaptchaInput:
+	if b.captchaHandler != nil {
+		for i := 0; i < MaxRetries; i++ {
+			for _, sel := range captchaInputSelectors {
+				if el, err := b.page.Element(sel); err == nil && el != nil {
+					if visible, _ := el.Visible(); visible {
+						selector.CaptchaInput = el.MustGetXPath(false)
+						logger.WithField("xpath", selector.CaptchaInput).Debug("Found Captcha Input")
+						goto foundCaptchaImage
+					}
+				}
+			}
+
+			if i < MaxRetries-1 {
+				time.Sleep(BackoffFactor * time.Duration(1<<uint(i)))
+				logger.WithField("attempt", i+1).Debug("captcha input not found, retrying...")
+			}
+		}
+	}
+
+foundCaptchaImage:
+	if b.captchaHandler != nil && selector.CaptchaInput != "" {
+		for i := 0; i < MaxRetries; i++ {
+			for _, sel := range captchaImageSelectors {
+				if el, err := b.page.Element(sel); err == nil && el != nil {
+					if visible, _ := el.Visible(); visible {
+						selector.CaptchaImg = el.MustGetXPath(false)
+						logger.WithField("xpath", selector.CaptchaImg).Debug("Found Captcha Image")
+						goto over
+					}
+				}
+			}
+
+			if i < MaxRetries-1 {
+				time.Sleep(BackoffFactor * time.Duration(1<<uint(i)))
+				logger.WithField("attempt", i+1).Debug("captcha image not found, retrying...")
+			}
+		}
+	}
+
+over:
+	//return selector, nil
+	if selector.UserInput != "" && selector.PasswordInput != "" && selector.LoginBtn != "" {
+		return selector, nil
+	}
+
+	return nil, fmt.Errorf("not form all elements found")
 }
 
 // DetectFormSelectors
@@ -412,63 +454,73 @@ over:
 // @return error
 func (b *Browser) DetectFormSelectors() (*Selector, error) {
 	logger := log.WithField("action", "detect_form_and_selectors")
+	logger.Debug("Starting selector detection")
 
 	var err error
-	var form *rod.Element
+	var s *Selector
 
-	if form, err = b.findForm(); err != nil {
-		// 匹配表单信息
-		return nil, err
-	}
+	//s, err = b.findElements(b.page)
+	//if err != nil {
+	//	return nil, fmt.Errorf("no visible form found")
+	//}
 
-	// 匹配表单内标签元素
-	logger.Debug("Starting selector detection")
-	var selector *Selector
-	if selector, err = b.findFormElements(form); err == nil {
-		return selector, nil
-	}
+	var formScores []*FormDesc
+	var forms rod.Elements
+	var formEL *rod.Element
 
-	// 检测失败，尝试表单评分方法
-	logger.Debug("Direct detection failed, trying form scoring approach")
-	var formScores []*FormScore
-	forms, err := b.page.Elements("form")
-	if err != nil {
-		return nil, fmt.Errorf("no forms found: %w", err)
-	}
-
-	// 对所有表单进行评分
-	for _, form = range forms {
-		score, formErr := scoreLoginForm(form)
-		if formErr == nil {
-			formScores = append(formScores, score)
-			formDetails := map[string]interface{}{
-				"tag":    form.MustEval("() => this.tagName").String(),
-				"id":     form.MustEval("() => this.id").String(),
-				"action": form.MustEval("() => this.action").String(),
-				"method": form.MustEval("() => this.method").String(),
+	if forms, err = b.page.Elements("form"); err == nil {
+		if len(forms) > 0 && forms != nil {
+			// 多form情况
+			for _, formEL = range forms {
+				score, formErr := b.scoreLoginForm(formEL)
+				if formErr == nil {
+					formScores = append(formScores, score)
+				}
 			}
-
-			logger.WithFields(log.Fields{
-				"score":       score.Score,
-				"hasLogin":    score.HasLogin,
-				"hasPass":     score.HasPass,
-				"hasSubmit":   score.HasSubmit,
-				"position":    score.Position,
-				"formDetails": formDetails,
-			}).Debug("Form scored with details")
+		} else {
+			// 单form情况
+			if formEL, err = b.page.Element("form"); err == nil && formEL != nil {
+				if visible, _ := formEL.Visible(); visible {
+					score, formErr := b.scoreLoginForm(formEL)
+					if formErr == nil {
+						formScores = append(formScores, score)
+					}
+				}
+			}
 		}
 	}
+
+	if len(formScores) == 0 {
+		// 没匹配到表单的话则进行结束
+		return nil, fmt.Errorf("no visible form found")
+	}
+
+	formEL = formScores[0].Form
+	s = formScores[0].selector
 
 	// 得分排序
 	sort.Slice(formScores, func(i, j int) bool {
 		return formScores[i].Score > formScores[j].Score
 	})
 
-	// 选择匹配度最高的表单元素
-	if len(formScores) > 0 && formScores[0].Score > 5 {
-		form = formScores[0].Form
-		return b.findFormElements(form)
+	// 匹配到表单的话则进行打印信息
+	formDetails := map[string]interface{}{
+		"tag":      formEL.MustEval("() => this.tagName ").String(),
+		"id":       formEL.MustEval("() => this.id ").String(),
+		"action":   formEL.MustEval("() => this.action ").String(),
+		"method":   formEL.MustEval("() => this.method ").String(),
+		"position": formEL.MustShape().Box(),
 	}
 
-	return nil, fmt.Errorf("no suitable login form found")
+	logger.WithFields(log.Fields{"formDetails": formDetails}).Info("Form Details")
+	logger.WithFields(log.Fields{
+		"score":       formScores[0].Score,
+		"hasLogin":    formScores[0].HasLogin,
+		"hasPass":     formScores[0].HasPass,
+		"hasSubmit":   formScores[0].HasSubmit,
+		"position":    formScores[0].Position,
+		"formDetails": formDetails,
+	}).Debug("Form scored with details")
+
+	return s, nil
 }

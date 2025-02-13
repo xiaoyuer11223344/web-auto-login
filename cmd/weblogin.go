@@ -115,7 +115,6 @@ func GetSelector(ctx context.Context, url string) (s *browser.Selector, err erro
 			return nil, fmt.Errorf("failed to parse selector file: %w", err)
 		}
 	} else {
-
 		var b *browser.Browser
 		b, err = browser.New(globalOptions.headless, globalOptions.proxy, globalOptions.ocrURL)
 		if err != nil {

@@ -1,0 +1,31 @@
+framework:
+  - name: "Coremail"
+    username: "//*[@id='uid']"
+    password: "//*[@id='password']"
+    indicate: "id=\"app\" class=\"webapp-desktop\""
+  - name: "泛微协同办公OA"
+    username: "//*[@id='loginid']"
+    password: "//*[@id='userpassword']"
+    captcha: "//*[@id='validatecode']"
+    captchaImage: "//div[@class='e9login-form-vc-img']/img[1]"
+    button: "//*[@name='submit']"
+    indicate: "id=\"app\" class=\"webapp-desktop\""
+  - name: "契约锁-前台登陆页面"
+    username: "//*[@name='username']"
+    password: "//*[@type='password']"
+    captcha: ""
+    captchaImage: ""
+    button: "//*[@id='app']/div/div[1]/div/div[2]/button"
+    indicate: "id=\"app\" class=\"webapp-desktop\""
+  - name: "通达OA"
+    username: "//*[@id='loginid']"
+    password: "//*[@id='userpassword']"
+    captcha: "//*[@id='validatecode']"
+    captchaImage: "//div[@class='e9login-form-vc-img']/img[1]"
+    button: "//*[@name='submit']"
+
+#      - "//*[@id='LoginContainer']/div/div[1]/div[2]/div[3]/div/img" # https://dftc-wps.dfmc.com.cn/
+#      - "//*[@id='LoginContainer']/div/div[2]/div[2]/div[3]/div/img" # http://oa.ccthr.com/, http://app.repugene.com:8081/
+#      - "//*[@id='LoginContainer']/div/div[2]/div[4]/div[3]/div/img" # http://oa.shaoxingtour.cn:8081/
+
+
